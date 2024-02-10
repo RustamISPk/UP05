@@ -16,6 +16,9 @@ answer = {1: [['-', '-', '-', '+'],
               ['-', '-', '+', '-']]
           }
 
+gamefield = [['-', '-', '-', '-'], ['-', '-', '-', '-'], ['-', '-', '-', '-'], ['-', '-', '-', '-']]
+
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -42,11 +45,10 @@ class Ui_MainWindow(object):
                 self.pushButton.setMinimumSize(50, 50)
                 self.pushButton.setMaximumSize(50, 50)
                 self.pushButton.setText(f'[ ]')
-                self.pushButton.setObjectName(f'{i}_{j}')
-                self.pushButton.setAccessibleName(f'{i}_{j}')
-                self.pushButton.clicked.connect(lambda cheked, button = self.pushButton: self.add_value(button))
+                self.pushButton.setObjectName(f'{i}')
+                self.pushButton.setAccessibleName(f'{j}')
+                self.pushButton.clicked.connect(lambda cheked, button=self.pushButton: self.add_value(button, gamefield))
                 self.gridLayout.addWidget(self.pushButton, i, j, 1, 1)
-
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
@@ -60,13 +62,16 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QMetaObject.connectSlotsByName(MainWindow)
 
-    def add_value(self, button):
-        print(f'кнопка {button.objectName()}')
-
-    def eventFilter(self, obj, event):
-        if int(event.type()) == 1:
-            print(int(obj.objectName()))
-        return super(QWidget, self).eventFilter(obj, event)
+    def add_value(self, button, list):
+        i = int(button.objectName())
+        j = int(button.accessibleName())
+        if list[i][j] == '-':
+            list[i][j] = '+'
+            button.setStyleSheet('background-color: green')
+        elif list[i][j] == '+':
+            list[i][j] = '-'
+            button.setStyleSheet('background-color: red')
+        button.setText(f'{list[i][j]}')
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -75,6 +80,7 @@ class Ui_MainWindow(object):
 
 if __name__ == "__main__":
     import sys
+
     app = QApplication(sys.argv)
     MainWindow = QMainWindow()
     ui = Ui_MainWindow()
