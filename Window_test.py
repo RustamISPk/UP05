@@ -44,7 +44,7 @@ class Ui_MainWindow(object):
                 self.pushButton.setText(f'[ ]')
                 self.pushButton.setObjectName(f'{i}_{j}')
                 self.pushButton.setAccessibleName(f'{i}_{j}')
-                self.pushButton.clicked.connect(lambda: self.eventFilter(self.pushButton, self.pushButton.accessibleName()))
+                self.pushButton.clicked.connect(lambda cheked, button = self.pushButton: self.add_value(button))
                 self.gridLayout.addWidget(self.pushButton, i, j, 1, 1)
 
 
@@ -60,11 +60,11 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QMetaObject.connectSlotsByName(MainWindow)
 
-    def add_value(self, name_button):
-        print(f'кнопка {name_button}')
+    def add_value(self, button):
+        print(f'кнопка {button.objectName()}')
 
     def eventFilter(self, obj, event):
-        if event.type() == 1:
+        if int(event.type()) == 1:
             print(int(obj.objectName()))
         return super(QWidget, self).eventFilter(obj, event)
 
