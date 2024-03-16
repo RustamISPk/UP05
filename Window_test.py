@@ -1,10 +1,24 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QMetaObject
 from PyQt5.QtWidgets import QGridLayout, QWidget, QListView, QMenuBar, QStatusBar, QMainWindow, QApplication, \
-    QPushButton
+    QPushButton, QListWidget
 
 rows = 4
 cols = 4
+
+variants = {1: 'Задание №1. В одном дворе живут четыре друга.\n'
+                'Вадим и шофёр старше Сергея;\n'
+                'Николая и слесарь занимаются боксом;\n'
+                'электрик - младший из друзей;\n'
+                'по вечерам Антон и токарь играют в домино против Сергея и электрика.\n'
+                'Определите профессию каждого из друзей',
+            2: 'Задание №2. В одном дворе живут четыре друга.\n'
+                'Вадим и шофёр старше Сергея;\n'
+                'Николая и слесарь занимаются боксом;\n'
+                'электрик - младший из друзей;\n'
+                'по вечерам Антон и токарь играют в домино против Сергея и электрика.\n'
+                'Определите профессию каждого из друзей',
+            }
 
 answer = {1: [['-', '-', '-', '+'],
               ['-', '+', '-', '-'],
@@ -16,7 +30,10 @@ answer = {1: [['-', '-', '-', '+'],
               ['-', '-', '+', '-']]
           }
 
-gamefield = [['-', '-', '-', '-'], ['-', '-', '-', '-'], ['-', '-', '-', '-'], ['-', '-', '-', '-']]
+gamefield = [['-', '-', '-', '-'],
+             ['-', '-', '-', '-'],
+             ['-', '-', '-', '-'],
+             ['-', '-', '-', '-']]
 
 
 class Ui_MainWindow(object):
@@ -26,9 +43,11 @@ class Ui_MainWindow(object):
 
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.listView = QListView(self.centralwidget)
+        self.listView = QListWidget(self.centralwidget)
         self.listView.setGeometry(QtCore.QRect(180, 10, 901, 281))
         self.listView.setObjectName("listView")
+        self.listView.addItem(str(variants[1]))
+
 
         self.gridLayoutWidget = QWidget(self.centralwidget)
         self.gridLayoutWidget.setGeometry(QtCore.QRect(420, 350, 250, 250))
@@ -67,7 +86,7 @@ class Ui_MainWindow(object):
         j = int(button.accessibleName())
         if list[i][j] == '-':
             list[i][j] = '+'
-            button.setStyleSheet('background-color: green')
+            button.setStyleSheet('background-color: lime')
         elif list[i][j] == '+':
             list[i][j] = '-'
             button.setStyleSheet('background-color: red')
@@ -76,7 +95,6 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-
 
 if __name__ == "__main__":
     import sys
