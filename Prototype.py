@@ -32,28 +32,30 @@ boolz = False
 
 
 class Ui_MainWindow(object):
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1280, 720)
+        self.number = 1
         self.gameplay()
 
-    def gameplay(self,):
+    def gameplay(self):
 
         gamefield = [[' ', ' ', ' ', ' '],
                      [' ', ' ', ' ', ' '],
                      [' ', ' ', ' ', ' '],
                      [' ', ' ', ' ', ' ']]
 
-        # flag = False
+        #result = False
 
-        number = 1
+
 
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.listView = QListWidget(self.centralwidget)
         self.listView.setGeometry(QtCore.QRect(180, 10, 901, 281))
         self.listView.setObjectName("listView")
-        self.listView.addItem(str(variants[number]))
+        self.listView.addItem(str(variants[self.number]))
 
         self.gridLayoutWidget = QWidget(self.centralwidget)
         self.gridLayoutWidget.setGeometry(QtCore.QRect(420, 350, 250, 250))
@@ -88,10 +90,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QMetaObject.connectSlotsByName(MainWindow)
 
-        if boolz == True:
-            if gamefield == answer[number]:
-                number += 1
-                return self.gameplay()
+
 
     def add_value(self, button, lists):
         global boolz
@@ -119,9 +118,14 @@ class Ui_MainWindow(object):
         else:
             boolz = False
             #print(boolz)
-        if boolz == True:
+        if boolz == True and lists == answer[self.number]:
             result = True
-            return lists, boolz
+            self.number += 1
+            #print('OK')
+            self.listView.clear()
+            self.listView.addItem(str(variants[self.number]))
+            return self.gameplay()
+            # return lists, boolz
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
