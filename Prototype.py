@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QMetaObject
 from PyQt5.QtWidgets import QGridLayout, QWidget, QListView, QMenuBar, QStatusBar, QMainWindow, QApplication, \
-    QPushButton, QListWidget, QLabel
+    QPushButton, QListWidget, QLabel, QStackedWidget, QVBoxLayout, QHBoxLayout
 
 rows, cols = 0, 0
 variants = {1: 'Задание №1. В одном дворе живут четыре друга.\n'
@@ -51,18 +51,31 @@ boolz = False
 class Ui_MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.setWindowTitle("Помощник решения логических задач")
         self.cell_v = None
         self.pushButton = None
         self.cell_h = None
         self.width = QApplication.desktop().width()
         self.height = QApplication.desktop().height()
-        self.setupUi(self)
-
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(self.width, self.height)
+        self.setObjectName("MainWindow")
+        self.resize(self.width, self.height)
         self.number = 1
+        self.centralwidget = QWidget()
+        self.centralwidget.setObjectName("centralwidget")
+        self.centrallayout = QVBoxLayout(self.centralwidget)
+        self.clearfild()
         self.gameplay()
+
+    def clearfild(self):
+        print(self.centrallayout.count())
+        index = self.centrallayout.count()
+        while index > 0:
+            item = self.centrallayout.itemAt(index)
+            self.centrallayout.removeItem(item)
+
+    def menu(self):
+        self.clearfild()
+        print('menu')
 
     def rows_cols_number(self, number):
         global rows, cols
@@ -79,16 +92,31 @@ class Ui_MainWindow(QMainWindow):
                 col_list.append(' ')
             gamefield.append(col_list)
 
-        self.centralwidget = QWidget()
-        self.centralwidget.setObjectName("centralwidget")
-        self.listView = QListWidget(self.centralwidget)
-        self.listView.setGeometry(QtCore.QRect(int((self.width-1000)/2), 40, 1000, 200))
+        self.taskLayout = QHBoxLayout()
+        self.listView = QLabel()
+        # self.listView.setGeometry(QtCore.QRect(int((self.width - 1000) / 2), 40, 1000, 200))
+        self.listView.move(int((self.width - 1000) / 2), 0)
+        self.listView.setMaximumSize(1000, 200)
+        self.listView.setStyleSheet('background: #fff')
         self.listView.setObjectName("listView")
-        self.listView.addItem(str(variants[self.number]))
+        self.listView.setText(str(variants[self.number]))
+        self.taskLayout.addWidget(self.listView)
+        self.btn = QPushButton()
+        self.btn.setText('menu')
+        self.btn.setMinimumSize(100, 50)
+        self.btn.clicked.connect(lambda: self.menu())
+        self.taskLayout.addWidget(self.btn)
+        self.centrallayout.addLayout(self.taskLayout)
 
-        self.gridLayoutWidget = QWidget(self.centralwidget)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(int((self.width-87*cols)/2), 300, 87*cols, 87*rows))
+        self.solutionLayout = QHBoxLayout()
+        self.gridLayoutWidget = QWidget()
+        # self.gridLayoutWidget.setGeometry(QtCore.QRect(int((self.width - 87 * cols) / 2), 300, 87 * cols, 87 * rows))
+        self.gridLayoutWidget.setMaximumSize(87 * cols, 87 * rows)
+        self.gridLayoutWidget.move(int((self.width - 87 * cols) / 2), 300)
+        self.gridLayoutWidget.setStyleSheet('background: #fff')
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
+        self.solutionLayout.addWidget(self.gridLayoutWidget)
+        self.centrallayout.addLayout(self.solutionLayout)
 
         self.gridLayout = QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -129,13 +157,13 @@ class Ui_MainWindow(QMainWindow):
                         self.gridLayout.addWidget(self.pushButton, i, j, 1, 1)
 
         self.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar()
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1280, 720))
-        self.menubar.setObjectName("menubar")
-        self.setMenuBar(self.menubar)
-        self.statusbar = QStatusBar()
-        self.statusbar.setObjectName("statusbar")
-        self.setStatusBar(self.statusbar)
+        # self.menubar = QMenuBar()
+        # self.menubar.setGeometry(QtCore.QRect(0, 0, 1280, 720))
+        # self.menubar.setObjectName("menubar")
+        # self.setMenuBar(self.menubar)
+        # self.statusbar = QStatusBar()
+        # self.statusbar.setObjectName("statusbar")
+        # self.setStatusBar(self.statusbar)
 
         # self.retranslateUi()
         # QMetaObject.connectSlotsByName()
@@ -177,6 +205,7 @@ class Ui_MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     import sys
+
     app = QApplication(sys.argv)
     window = Ui_MainWindow()
     window.showMaximized()
