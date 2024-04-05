@@ -1,7 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QMetaObject
+from PyQt5.QtCore import QMetaObject, QRect
+from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QGridLayout, QWidget, QListView, QMenuBar, QStatusBar, QMainWindow, QApplication, \
-    QPushButton, QListWidget, QLabel, QStackedWidget, QVBoxLayout, QHBoxLayout
+    QPushButton, QListWidget, QLabel, QStackedWidget, QVBoxLayout
 
 rows, cols = 0, 0
 variants = {1: 'Задание №1. В одном дворе живут четыре друга.\n'
@@ -46,129 +47,142 @@ ColsAndRowsName = {1: [['Вадим', 'Сергей', 'Николай', 'Ант�
                    }
 
 boolz = False
+number = 1
+
+
+class MainMenu(QMainWindow):
+    global variants, answer, ColsAndRowsName
+
+    def __init__(self, mainwindow):
+        super().__init__()
+        self.initUI(mainwindow)
+
+    def initUI(self, mainwindow):
+        label = QLabel(self)
+        label.setGeometry(QRect(691, 40, 538, 111))
+        font = QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(20)
+        label.setFont(font)
+        label.setObjectName("label")
+        verticalLayoutWidget = QWidget(self)
+        verticalLayoutWidget.setGeometry(QRect(930, 260, 160, 100))
+        verticalLayoutWidget.setObjectName("verticalLayoutWidget")
+        verticalLayout = QVBoxLayout(verticalLayoutWidget)
+        verticalLayout.setContentsMargins(0, 0, 0, 0)
+        verticalLayout.setObjectName("verticalLayout")
+        FirstTask = QPushButton(verticalLayoutWidget)
+        FirstTask.setObjectName("FirstTask")
+        FirstTask.clicked.connect(lambda: mainwindow.First())
+        verticalLayout.addWidget(FirstTask)
+        ChooseTask = QPushButton(verticalLayoutWidget)
+        ChooseTask.setObjectName("ChooseTask")
+        verticalLayout.addWidget(ChooseTask)
+        NewTask = QPushButton(verticalLayoutWidget)
+        NewTask.setObjectName("NewTask")
+        verticalLayout.addWidget(NewTask)
+        label.setText("Помощник решения логических задач")
+        FirstTask.setText("Начать с первой задачи")
+        ChooseTask.setText("Выбрать задачу")
+        NewTask.setText("Добавить задачу")
 
 
 class Ui_MainWindow(QMainWindow):
-    def __init__(self):
+    def __init__(self, mainwindow):
         super().__init__()
-        self.setWindowTitle("Помощник решения логических задач")
+        self.gridLayout = None
+        self.gridLayoutWidget = None
+        self.listView = None
+        self.centralwidget = None
+        self.number = None
+        self.BackButton = None
         self.cell_v = None
         self.pushButton = None
         self.cell_h = None
         self.width = QApplication.desktop().width()
         self.height = QApplication.desktop().height()
-        self.setObjectName("MainWindow")
-        self.resize(self.width, self.height)
-        self.number = 1
-        self.centralwidget = QWidget()
-        self.centralwidget.setObjectName("centralwidget")
-        self.centrallayout = QVBoxLayout(self.centralwidget)
-        self.clearfild()
-        self.gameplay()
+        self.setupUi(self, mainwindow)
 
-    def clearfild(self):
-        print(self.centrallayout.count())
-        index = self.centrallayout.count()
-        while index > 0:
-            item = self.centrallayout.itemAt(index)
-            self.centrallayout.removeItem(item)
-
-    def menu(self):
-        self.clearfild()
-        print('menu')
+    def setupUi(self, MainWindow, mainwindow):
+        MainWindow.setObjectName("MainWindow")
+        MainWindow.resize(self.width, self.height)
+        self.number = number
+        self.gameplay(mainwindow)
 
     def rows_cols_number(self, number):
         global rows, cols
         rows = len(ColsAndRowsName[number][1]) + 1
         cols = len(ColsAndRowsName[number][0]) + 1
 
-    def gameplay(self):
-        self.rows_cols_number(self.number)
+    def gameplay(self, mainwindow):
+        if self.number <= len(variants):
+            self.rows_cols_number(self.number)
 
-        gamefield = []
-        for i in range(rows - 1):
-            col_list = []
-            for j in range(cols - 1):
-                col_list.append(' ')
-            gamefield.append(col_list)
+            gamefield = []
+            for i in range(rows - 1):
+                col_list = []
+                for j in range(cols - 1):
+                    col_list.append(' ')
+                gamefield.append(col_list)
 
-        self.taskLayout = QHBoxLayout()
-        self.listView = QLabel()
-        # self.listView.setGeometry(QtCore.QRect(int((self.width - 1000) / 2), 40, 1000, 200))
-        self.listView.move(int((self.width - 1000) / 2), 0)
-        self.listView.setMaximumSize(1000, 200)
-        self.listView.setStyleSheet('background: #fff')
-        self.listView.setObjectName("listView")
-        self.listView.setText(str(variants[self.number]))
-        self.taskLayout.addWidget(self.listView)
-        self.btn = QPushButton()
-        self.btn.setText('menu')
-        self.btn.setMinimumSize(100, 50)
-        self.btn.clicked.connect(lambda: self.menu())
-        self.taskLayout.addWidget(self.btn)
-        self.centrallayout.addLayout(self.taskLayout)
+            self.centralwidget = QWidget()
+            self.centralwidget.setObjectName("centralwidget")
 
-        self.solutionLayout = QHBoxLayout()
-        self.gridLayoutWidget = QWidget()
-        # self.gridLayoutWidget.setGeometry(QtCore.QRect(int((self.width - 87 * cols) / 2), 300, 87 * cols, 87 * rows))
-        self.gridLayoutWidget.setMaximumSize(87 * cols, 87 * rows)
-        self.gridLayoutWidget.move(int((self.width - 87 * cols) / 2), 300)
-        self.gridLayoutWidget.setStyleSheet('background: #fff')
-        self.gridLayoutWidget.setObjectName("gridLayoutWidget")
-        self.solutionLayout.addWidget(self.gridLayoutWidget)
-        self.centrallayout.addLayout(self.solutionLayout)
+            self.BackButton = QPushButton(self.centralwidget)
+            self.BackButton.setStyleSheet('background-color: blue')
+            self.BackButton.setText('Назад')
+            self.BackButton.setGeometry(0, 0, 100, 50)
+            self.BackButton.clicked.connect(lambda: mainwindow.back())
 
-        self.gridLayout = QGridLayout(self.gridLayoutWidget)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout.setObjectName("gridLayout")
+            self.listView = QListWidget(self.centralwidget)
+            self.listView.setGeometry(QtCore.QRect(int((self.width - 1000) / 2), 40, 1000, 200))
+            self.listView.setObjectName("listView")
+            self.listView.addItem(str(variants[self.number]))
 
-        for i in range(rows):
-            for j in range(cols):
-                self.pushButton = QPushButton()
-                self.pushButton.setStyleSheet('background-color: yellow')
-                self.pushButton.setMinimumSize(75, 75)
-                self.pushButton.setMaximumSize(75, 75)
-                self.pushButton.setText(f'{i}_{j}')
-                self.pushButton.setObjectName(f'{i}')
-                self.pushButton.setAccessibleName(f'{j}')
-                self.pushButton.clicked.connect(
-                    lambda cheked, button=self.pushButton: self.add_value(button, gamefield))
+            self.gridLayoutWidget = QWidget(self.centralwidget)
+            self.gridLayoutWidget.setGeometry(
+                QtCore.QRect(int((self.width - 87 * cols) / 2), 300, 87 * cols, 87 * rows))
+            self.gridLayoutWidget.setObjectName("gridLayoutWidget")
 
-                self.cell_h = QLabel()
-                self.cell_h.setMinimumSize(75, 30)
-                self.cell_h.setMaximumSize(75, 30)
-                self.cell_h.setObjectName(f'{i}{j}')
-                self.cell_h.setStyleSheet('border: 1px solid #000')
+            self.gridLayout = QGridLayout(self.gridLayoutWidget)
+            self.gridLayout.setContentsMargins(0, 0, 0, 0)
+            self.gridLayout.setObjectName("gridLayout")
 
-                self.cell_v = QLabel()
-                self.cell_v.setMinimumSize(75, 30)
-                self.cell_v.setMaximumSize(75, 30)
-                self.cell_v.setObjectName(f'{i}{j}')
-                self.cell_v.setStyleSheet('border: 1px solid #000')
+            for i in range(rows):
+                for j in range(cols):
+                    self.pushButton = QPushButton()
+                    self.pushButton.setStyleSheet('background-color: yellow')
+                    self.pushButton.setMinimumSize(75, 75)
+                    self.pushButton.setMaximumSize(75, 75)
+                    self.pushButton.setText(f'{i}_{j}')
+                    self.pushButton.setObjectName(f'{i}')
+                    self.pushButton.setAccessibleName(f'{j}')
+                    self.pushButton.clicked.connect(
+                        lambda cheked, button=self.pushButton: self.add_value(button, gamefield, mainwindow))
 
-                if i == 0 and j != 0:
-                    self.cell_h.setText(ColsAndRowsName[self.number][0][j - 1])
-                    self.gridLayout.addWidget(self.cell_h, i, j, 1, 1)
-                else:
-                    if j == 0 and i != 0:
-                        self.cell_v.setText(ColsAndRowsName[self.number][1][i - 1])
-                        self.gridLayout.addWidget(self.cell_v, i, j, 1, 1)
-                    elif i != 0 and j != 0:
-                        self.gridLayout.addWidget(self.pushButton, i, j, 1, 1)
+                    self.cell_h = QLabel()
+                    self.cell_h.setMinimumSize(75, 30)
+                    self.cell_h.setMaximumSize(75, 30)
+                    self.cell_h.setObjectName(f'{i}{j}')
+                    self.cell_h.setStyleSheet('border: 1px solid #000')
 
-        self.setCentralWidget(self.centralwidget)
-        # self.menubar = QMenuBar()
-        # self.menubar.setGeometry(QtCore.QRect(0, 0, 1280, 720))
-        # self.menubar.setObjectName("menubar")
-        # self.setMenuBar(self.menubar)
-        # self.statusbar = QStatusBar()
-        # self.statusbar.setObjectName("statusbar")
-        # self.setStatusBar(self.statusbar)
+                    self.cell_v = QLabel()
+                    self.cell_v.setMinimumSize(75, 30)
+                    self.cell_v.setMaximumSize(75, 30)
+                    self.cell_v.setObjectName(f'{i}{j}')
+                    self.cell_v.setStyleSheet('border: 1px solid #000')
 
-        # self.retranslateUi()
-        # QMetaObject.connectSlotsByName()
+                    if i == 0 and j != 0:
+                        self.cell_h.setText(ColsAndRowsName[self.number][0][j - 1])
+                        self.gridLayout.addWidget(self.cell_h, i, j, 1, 1)
+                    else:
+                        if j == 0 and i != 0:
+                            self.cell_v.setText(ColsAndRowsName[self.number][1][i - 1])
+                            self.gridLayout.addWidget(self.cell_v, i, j, 1, 1)
+                        elif i != 0 and j != 0:
+                            self.gridLayout.addWidget(self.pushButton, i, j, 1, 1)
 
-    def add_value(self, button, lists):
+    def add_value(self, button, lists, mainwindow):
         global boolz
         i = int(button.objectName()) - 1
         j = int(button.accessibleName()) - 1
@@ -196,17 +210,49 @@ class Ui_MainWindow(QMainWindow):
             self.number += 1
             self.listView.clear()
             self.listView.addItem(str(variants[self.number]))
-            return self.gameplay()
+            return self.gameplay(mainwindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
 
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.stack = None
+        self.flag = False
+        self.UIinit()
+
+    def UIinit(self):
+        self.Widget = QWidget()
+        self.stack = QStackedWidget()
+        self.window2 = Ui_MainWindow(self)
+        window1 = MainMenu(self)
+        self.stack.addWidget(window1)
+        self.stack.addWidget(self.window2)
+        self.stack.setCurrentIndex(0)
+
+        self.setCentralWidget(self.Widget)
+        self.layout = QVBoxLayout(self.Widget)
+        self.layout.addWidget(self.stack)
+
+    def back(self):
+        self.stack.setCurrentIndex(0)
+        self.flag = True
+
+    def First(self):
+        self.flag = False
+        self.window2.deleteLater()
+        self.window2 = Ui_MainWindow(self)
+        self.stack.addWidget(self.window2)
+        self.stack.setCurrentIndex(1)
+
+
 if __name__ == "__main__":
     import sys
 
     app = QApplication(sys.argv)
-    window = Ui_MainWindow()
+    window = MainWindow()
     window.showMaximized()
     sys.exit(app.exec_())
