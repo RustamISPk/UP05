@@ -182,6 +182,8 @@ class Ui_MainWindow(QMainWindow):
                         elif i != 0 and j != 0:
                             self.gridLayout.addWidget(self.pushButton, i, j, 1, 1)
 
+        self.setCentralWidget(self.centralwidget)
+
     def add_value(self, button, lists, mainwindow):
         global boolz
         i = int(button.objectName()) - 1
