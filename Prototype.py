@@ -23,6 +23,7 @@ variants = {1: 'Задание №1. В одном дворе живут чет�
                'электрик - младший из друзей;\n'
                'по вечерам Антон и токарь играют в домино против Сергея и электрика.\n'
                'Определите профессию каждого из друзей',
+            4: ''
             }
 answer = {1: [['-', '-', '-', '+'],
               ['-', '+', '-', '-'],
@@ -35,7 +36,8 @@ answer = {1: [['-', '-', '-', '+'],
               ['-', '-', '+']],
           3: [['+', '-', '-', '-', '-'],
               ['-', '+', '-', '-', '-'],
-              ['-', '-', '+', '-', '-']]
+              ['-', '-', '+', '-', '-']],
+          4: ''
           }
 
 ColsAndRowsName = {1: [['Вадим', 'Сергей', 'Николай', 'Антон'],
@@ -43,7 +45,8 @@ ColsAndRowsName = {1: [['Вадим', 'Сергей', 'Николай', 'Ант�
                    2: [['Андрей', 'Сергей', 'Николай'],
                        ['Шофер', 'Слесарь', 'Токарь', 'Электрик', 'Повар']],
                    3: [['Шофер', 'Слесарь', 'Токарь', 'Электрик', 'Повар'],
-                       ['Андрей', 'Сергей', 'Николай']]
+                       ['Андрей', 'Сергей', 'Николай']],
+                   4: ''
                    }
 
 boolz = False
@@ -66,7 +69,7 @@ class MainMenu(QMainWindow):
         label.setFont(font)
         label.setObjectName("label")
         verticalLayoutWidget = QWidget(self)
-        verticalLayoutWidget.setGeometry(QRect(930, 260, 160, 100))
+        verticalLayoutWidget.setGeometry(QRect(880, 260, 160, 250))
         verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         verticalLayout = QVBoxLayout(verticalLayoutWidget)
         verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -75,12 +78,18 @@ class MainMenu(QMainWindow):
         FirstTask.setObjectName("FirstTask")
         FirstTask.clicked.connect(lambda: mainwindow.First())
         verticalLayout.addWidget(FirstTask)
+        FirstTask.setMinimumSize(150, 75)
+        FirstTask.setMaximumSize(150, 75)
         ChooseTask = QPushButton(verticalLayoutWidget)
         ChooseTask.setObjectName("ChooseTask")
         verticalLayout.addWidget(ChooseTask)
+        ChooseTask.setMinimumSize(150, 75)
+        ChooseTask.setMaximumSize(150, 75)
         NewTask = QPushButton(verticalLayoutWidget)
         NewTask.setObjectName("NewTask")
         verticalLayout.addWidget(NewTask)
+        NewTask.setMinimumSize(150, 75)
+        NewTask.setMaximumSize(150, 75)
         label.setText("Помощник решения логических задач")
         FirstTask.setText("Начать с первой задачи")
         ChooseTask.setText("Выбрать задачу")
@@ -115,7 +124,7 @@ class Ui_MainWindow(QMainWindow):
         cols = len(ColsAndRowsName[number][0]) + 1
 
     def gameplay(self, mainwindow):
-        if self.number <= len(variants):
+        if self.number < len(variants):
             self.rows_cols_number(self.number)
 
             gamefield = []
@@ -182,7 +191,9 @@ class Ui_MainWindow(QMainWindow):
                         elif i != 0 and j != 0:
                             self.gridLayout.addWidget(self.pushButton, i, j, 1, 1)
 
-        self.setCentralWidget(self.centralwidget)
+            self.setCentralWidget(self.centralwidget)
+        else:
+            mainwindow.stack.setCurrentIndex(0)
 
     def add_value(self, button, lists, mainwindow):
         global boolz
@@ -256,5 +267,6 @@ if __name__ == "__main__":
 
     app = QApplication(sys.argv)
     window = MainWindow()
+    window.setFixedSize(1920, 1080)
     window.showMaximized()
     sys.exit(app.exec_())
