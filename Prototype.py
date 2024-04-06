@@ -1,56 +1,87 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QMetaObject, QRect
+from PyQt5.QtCore import QMetaObject, QRect, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QGridLayout, QWidget, QListView, QMenuBar, QStatusBar, QMainWindow, QApplication, \
-    QPushButton, QListWidget, QLabel, QStackedWidget, QVBoxLayout
+    QPushButton, QListWidget, QLabel, QStackedWidget, QVBoxLayout, QTextEdit
+import json
 
 rows, cols = 0, 0
-variants = {1: 'Задание №1. В одном дворе живут четыре друга.\n'
-               'Вадим и шофёр старше Сергея;\n'
-               'Николая и слесарь занимаются боксом;\n'
-               'электрик - младший из друзей;\n'
-               'по вечерам Антон и токарь играют в домино против Сергея и электрика.\n'
-               'Определите профессию каждого из друзей',
-            2: 'Задание №2. В одном дворе живут четыре друга.\n'
-               'Вадим и шофёр старше Сергея;\n'
-               'Николая и слесарь занимаются боксом;\n'
-               'электрик - младший из друзей;\n'
-               'по вечерам Антон и токарь играют в домино против Сергея и электрика.\n'
-               'Определите профессию каждого из друзей',
-            3: 'Задание №3. В одном дворе живут четыре друга.\n'
-               'Вадим и шофёр старше Сергея;\n'
-               'Николая и слесарь занимаются боксом;\n'
-               'электрик - младший из друзей;\n'
-               'по вечерам Антон и токарь играют в домино против Сергея и электрика.\n'
-               'Определите профессию каждого из друзей',
-            4: ''
-            }
-answer = {1: [['-', '-', '-', '+'],
-              ['-', '+', '-', '-'],
-              ['+', '-', '-', '-'],
-              ['-', '-', '+', '-']],
-          2: [['+', '-', '-'],
-              ['-', '+', '-'],
-              ['+', '-', '-'],
-              ['+', '-', '-'],
-              ['-', '-', '+']],
-          3: [['+', '-', '-', '-', '-'],
-              ['-', '+', '-', '-', '-'],
-              ['-', '-', '+', '-', '-']],
-          4: ''
-          }
 
-ColsAndRowsName = {1: [['Вадим', 'Сергей', 'Николай', 'Антон'],
-                       ['Шофер', 'Слесарь', 'Токарь', 'Электрик']],
-                   2: [['Андрей', 'Сергей', 'Николай'],
-                       ['Шофер', 'Слесарь', 'Токарь', 'Электрик', 'Повар']],
-                   3: [['Шофер', 'Слесарь', 'Токарь', 'Электрик', 'Повар'],
-                       ['Андрей', 'Сергей', 'Николай']],
-                   4: ''
-                   }
+with open('variants.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
+    variants = json.load(fh)  # загружаем из файла данные в словарь data
+
+with open('answers.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
+    answer = json.load(fh)  # загружаем из файла данные в словарь data
+
+with open('ColsAndRowsName.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
+    ColsAndRowsName = json.load(fh)  # загружаем из файла данные в словарь data
 
 boolz = False
 number = 1
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QMainWindow, QApplication
+
+
+class ChoiseWindow(QMainWindow):
+
+    def __init__(self, mainwindow):
+        super().__init__()
+        self.setupUi(mainwindow)
+
+    def setupUi(self, mainwindow):
+        self.centralwidget = QWidget()
+        self.centralwidget.setObjectName("centralwidget")
+        self.label = QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(650, 10, 470, 101))
+        font = QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(22)
+        self.label.setFont(font)
+        self.label.setAlignment(Qt.AlignCenter)
+        self.label.setObjectName("label")
+        self.label.setText('Введите номер задачи в поле')
+        self.gridLayoutWidget = QWidget(self.centralwidget)
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(390, 100, 1000, 50))
+        self.gridLayoutWidget.setObjectName("gridLayoutWidget")
+        self.gridLayout = QGridLayout(self.gridLayoutWidget)
+        self.gridLayout.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout.setObjectName("gridLayout")
+
+        self.MenuButton = QPushButton(self.gridLayoutWidget)
+        self.MenuButton.setObjectName("MenuButton")
+        self.MenuButton.setMinimumSize(150, 50)
+        self.MenuButton.setMaximumSize(150, 50)
+        self.MenuButton.setText('Назад')
+        self.MenuButton.clicked.connect(lambda: mainwindow.back())
+        self.gridLayout.addWidget(self.MenuButton, 0, 0, 1, 1)
+
+        self.TaskEdit = QTextEdit(self.gridLayoutWidget)
+        font = QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(18)
+        self.TaskEdit.setFont(font)
+        self.TaskEdit.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.IBeamCursor))
+        self.TaskEdit.setObjectName("TaskEdit")
+        self.gridLayout.addWidget(self.TaskEdit, 0, 1, 1, 1)
+
+        self.GameButton = QPushButton(self.gridLayoutWidget)
+        self.GameButton.setObjectName("GameButton")
+        self.GameButton.setMinimumSize(150, 50)
+        self.GameButton.setMaximumSize(150, 50)
+        self.GameButton.setText('Продолжить')
+        self.GameButton.clicked.connect(lambda: self.TaskNumber(mainwindow))
+        self.gridLayout.addWidget(self.GameButton, 0, 2, 1, 1)
+        self.setCentralWidget(self.centralwidget)
+
+    def TaskNumber(self, mainwindow):
+        global number
+        number = int(self.TaskEdit.toPlainText())
+        mainwindow.window2.deleteLater()
+        mainwindow.window2 = Ui_MainWindow(mainwindow)
+        mainwindow.stack.addWidget(mainwindow.window2)
+        mainwindow.stack.setCurrentWidget(mainwindow.window2)
+        self.TaskEdit.clear()
 
 
 class MainMenu(QMainWindow):
@@ -82,6 +113,7 @@ class MainMenu(QMainWindow):
         FirstTask.setMaximumSize(150, 75)
         ChooseTask = QPushButton(verticalLayoutWidget)
         ChooseTask.setObjectName("ChooseTask")
+        ChooseTask.clicked.connect(lambda: mainwindow.Choice())
         verticalLayout.addWidget(ChooseTask)
         ChooseTask.setMinimumSize(150, 75)
         ChooseTask.setMaximumSize(150, 75)
@@ -120,8 +152,8 @@ class Ui_MainWindow(QMainWindow):
 
     def rows_cols_number(self, number):
         global rows, cols
-        rows = len(ColsAndRowsName[number][1]) + 1
-        cols = len(ColsAndRowsName[number][0]) + 1
+        rows = len(ColsAndRowsName[str(number)][1]) + 1
+        cols = len(ColsAndRowsName[str(number)][0]) + 1
 
     def gameplay(self, mainwindow):
         if self.number < len(variants):
@@ -146,7 +178,7 @@ class Ui_MainWindow(QMainWindow):
             self.listView = QListWidget(self.centralwidget)
             self.listView.setGeometry(QtCore.QRect(int((self.width - 1000) / 2), 40, 1000, 200))
             self.listView.setObjectName("listView")
-            self.listView.addItem(str(variants[self.number]))
+            self.listView.addItem(str(variants[str(self.number)]))
 
             self.gridLayoutWidget = QWidget(self.centralwidget)
             self.gridLayoutWidget.setGeometry(
@@ -182,11 +214,11 @@ class Ui_MainWindow(QMainWindow):
                     self.cell_v.setStyleSheet('border: 1px solid #000')
 
                     if i == 0 and j != 0:
-                        self.cell_h.setText(ColsAndRowsName[self.number][0][j - 1])
+                        self.cell_h.setText(ColsAndRowsName[str(self.number)][0][j - 1])
                         self.gridLayout.addWidget(self.cell_h, i, j, 1, 1)
                     else:
                         if j == 0 and i != 0:
-                            self.cell_v.setText(ColsAndRowsName[self.number][1][i - 1])
+                            self.cell_v.setText(ColsAndRowsName[str(self.number)][1][i - 1])
                             self.gridLayout.addWidget(self.cell_v, i, j, 1, 1)
                         elif i != 0 and j != 0:
                             self.gridLayout.addWidget(self.pushButton, i, j, 1, 1)
@@ -219,10 +251,10 @@ class Ui_MainWindow(QMainWindow):
             boolz = True
         else:
             boolz = False
-        if boolz == True and lists == answer[self.number]:
+        if boolz == True and lists == answer[str(self.number)]:
             self.number += 1
             self.listView.clear()
-            self.listView.addItem(str(variants[self.number]))
+            self.listView.addItem(str(variants[str(self.number)]))
             return self.gameplay(mainwindow)
 
     def retranslateUi(self, MainWindow):
@@ -241,30 +273,35 @@ class MainWindow(QMainWindow):
         self.Widget = QWidget()
         self.stack = QStackedWidget()
         self.window2 = Ui_MainWindow(self)
-        window1 = MainMenu(self)
-        self.stack.addWidget(window1)
+        self.window1 = MainMenu(self)
+        self.window3 = ChoiseWindow(self)
+        self.stack.addWidget(self.window1)
         self.stack.addWidget(self.window2)
-        self.stack.setCurrentIndex(0)
+        self.stack.addWidget(self.window3)
+        self.stack.setCurrentWidget(self.window1)
 
         self.setCentralWidget(self.Widget)
         self.layout = QVBoxLayout(self.Widget)
         self.layout.addWidget(self.stack)
 
     def back(self):
-        self.stack.setCurrentIndex(0)
+        self.stack.setCurrentWidget(self.window1)
         self.flag = True
 
     def First(self):
-        self.flag = False
+        global number
+        number = 1
         self.window2.deleteLater()
         self.window2 = Ui_MainWindow(self)
         self.stack.addWidget(self.window2)
-        self.stack.setCurrentIndex(1)
+        self.stack.setCurrentWidget(self.window2)
+
+    def Choice(self):
+        self.stack.setCurrentWidget(self.window3)
 
 
 if __name__ == "__main__":
     import sys
-
     app = QApplication(sys.argv)
     window = MainWindow()
     window.setFixedSize(1920, 1080)
