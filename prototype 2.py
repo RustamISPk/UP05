@@ -49,6 +49,7 @@ ColsAndRowsName = {1: [['Вадим', 'Сергей', 'Николай', 'Ант�
 boolz = False
 
 class MainMenu(QWidget):
+    global variants, answer, ColsAndRowsName
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -91,16 +92,15 @@ class MainRegime(QWidget):
         self.cell_h = None
         self.width = QApplication.desktop().width()
         self.height = QApplication.desktop().height()
-        self.number = 1
         self.setupUi(self)
 
     def setupUi(self, MainRegime):
         MainRegime.resize(self.width, self.height)
+        self.number = 1
+        self.gameplay()
 
-        self.gameplay(self.number)
-
-    def gameplay(self, number):
-        self.rows_cols_number(number)
+    def gameplay(self):
+        self.rows_cols_number(self.number)
 
         gamefield = []
         for i in range(rows - 1):
@@ -109,13 +109,12 @@ class MainRegime(QWidget):
                 col_list.append(' ')
             gamefield.append(col_list)
 
-        # centralwidget = QWidget(self)
-        # centralwidget.setObjectName("centralwidget")
-
+        centralwidget = QWidget(self)
+        centralwidget.setObjectName("centralwidget")
         listView = QLabel(self)
         listView.setGeometry(QtCore.QRect(int((self.width-1000)/2), 40, 1000, 200))
         listView.setObjectName("listView")
-        listView.setText(str(variants[number]))
+        listView.setText(str(variants[self.number]))
 
         gridLayoutWidget = QWidget(self)
         gridLayoutWidget.setGeometry(QtCore.QRect(int((self.width-87*cols)/2), 300, 87*cols, 87*rows))
@@ -128,23 +127,23 @@ class MainRegime(QWidget):
         for i in range(rows):
             for j in range(cols):
                 if (i != 0 and j != 0):
-                    self.pushButton = QPushButton()
-                    self.pushButton.setStyleSheet('background-color: yellow')
-                    self.pushButton.setMinimumSize(75, 75)
-                    self.pushButton.setMaximumSize(75, 75)
-                    self.pushButton.setText(f'{i}_{j}')
-                    self.pushButton.setObjectName(f'{i}')
-                    self.pushButton.setAccessibleName(f'{j}')
-                    self.pushButton.clicked.connect(
-                        lambda cheked, button=self.pushButton: self.add_value(button, gamefield, listView, number))
-                    gridLayout.addWidget(self.pushButton, i, j, 1, 1)
+                    pushButton = QPushButton(self)
+                    pushButton.setStyleSheet('background-color: yellow')
+                    pushButton.setMinimumSize(75, 75)
+                    pushButton.setMaximumSize(75, 75)
+                    pushButton.setText(f'{i}_{j}')
+                    pushButton.setObjectName(f'{i}')
+                    pushButton.setAccessibleName(f'{j}')
+                    pushButton.clicked.connect(
+                        lambda cheked, button=self.pushButton: self.add_value(button, gamefield))
+                    gridLayout.addWidget(pushButton, i, j, 1, 1)
                 if i == 0 and j != 0:
                     cell_h = QLabel(self)
                     cell_h.setMinimumSize(75, 30)
                     cell_h.setMaximumSize(75, 30)
                     cell_h.setObjectName(f'{i}{j}')
                     cell_h.setStyleSheet('border: 1px solid #000')
-                    cell_h.setText(ColsAndRowsName[number][0][j - 1])
+                    cell_h.setText(ColsAndRowsName[self.number][0][j - 1])
                     gridLayout.addWidget(cell_h, i, j, 1, 1)
 
                 if j == 0 and i != 0:
@@ -153,7 +152,7 @@ class MainRegime(QWidget):
                     cell_v.setMaximumSize(75, 30)
                     cell_v.setObjectName(f'{i}{j}')
                     cell_v.setStyleSheet('border: 1px solid #000')
-                    cell_v.setText(ColsAndRowsName[number][1][i - 1])
+                    cell_v.setText(ColsAndRowsName[self.number][1][i - 1])
                     gridLayout.addWidget(cell_v, i, j, 1, 1)
 
                 # if i == 0 and j != 0:
@@ -166,13 +165,8 @@ class MainRegime(QWidget):
                     # elif i != 0 and j != 0:
                     #     gridLayout.addWidget(pushButton, i, j, 1, 1)
 
-        # print(gridLayout.count())
-        # for z in range(gridLayout.count()):
-        #     item = gridLayout.itemAt(z)
-        #     gridLayout.removeItem(item)
-
-    def add_value(self, button, lists, listView, number):
-        global boolz, answer, variants
+    def add_value(self, button, lists):
+        global boolz
         i = int(button.objectName()) - 1
         j = int(button.accessibleName()) - 1
 
@@ -195,11 +189,11 @@ class MainRegime(QWidget):
             boolz = True
         else:
             boolz = False
-        if boolz == True and lists == answer[number]:
-            number += 1
-            listView.clear()
-            # listView.setText(str(variants[number]))
-            return self.gameplay(number)
+        if boolz == True and lists == answer[self.number]:
+            self.number += 1
+            self.listView.clear()
+            self.listView.setText(str(variants[self.number]))
+            return self.gameplay()
 
     def rows_cols_number(self, number):
         global rows, cols
