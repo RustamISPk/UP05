@@ -3,6 +3,7 @@ from PyQt5.QtCore import QMetaObject, QRect, Qt
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QGridLayout, QWidget, QListView, QMenuBar, QStatusBar, QMainWindow, QApplication, \
     QPushButton, QListWidget, QLabel, QStackedWidget, QVBoxLayout, QTextEdit
+from qt_material import apply_stylesheet
 import json
 
 rows, cols = 0, 0
@@ -19,9 +20,38 @@ with open('ColsAndRowsName.json', 'r', encoding='utf-8') as fh:  # открыв�
 boolz = False
 number = 1
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QApplication
+class AddTask(QMainWindow):
 
+    def __init__(self, mainwindow):
+        super().__init__()
+        self.setupUi(mainwindow)
+
+    def setupUi(self, mainwindow):
+        self.centralwidget = QWidget()
+        self.centralwidget.setObjectName("centralwidget")
+        self.Instruction = QLabel(self.centralwidget)
+        self.Instruction.setGeometry(QtCore.QRect(1530, 0, 381, 291))
+        self.Instruction.setObjectName("label")
+        self.SaveButton = QPushButton(self.centralwidget)
+        self.SaveButton.setGeometry(QtCore.QRect(1630, 340, 201, 41))
+        self.SaveButton.setObjectName("pushButton")
+        self.TaskText = QTextEdit(self.centralwidget)
+        self.TaskText.setGeometry(QtCore.QRect(730, 260, 511, 191))
+        self.TaskText.setObjectName("textEdit")
+        self.TaskColsAndRows = QTextEdit(self.centralwidget)
+        self.TaskColsAndRows.setGeometry(QtCore.QRect(730, 470, 511, 101))
+        self.TaskColsAndRows.setObjectName("textEdit_2")
+        self.TaskAnswer = QTextEdit(self.centralwidget)
+        self.TaskAnswer.setGeometry(QtCore.QRect(730, 590, 511, 191))
+        self.TaskAnswer.setObjectName("textEdit_3")
+        self.setCentralWidget(self.centralwidget)
+        self.Instruction.setText("Instruction")
+        self.SaveButton.setText("Сохранить задачу")
+        self.BackButton = QPushButton(self.centralwidget)
+        self.BackButton.setGeometry(QtCore.QRect(100, 1800, 201, 41))
+        self.BackButton.setObjectName("pushButton")
+        self.BackButton.setText('Назад')
+        self.BackButton.clicked.connect(lambda: mainwindow.back())
 
 class ChoiseWindow(QMainWindow):
 
@@ -72,6 +102,7 @@ class ChoiseWindow(QMainWindow):
         self.GameButton.setText('Продолжить')
         self.GameButton.clicked.connect(lambda: self.TaskNumber(mainwindow))
         self.gridLayout.addWidget(self.GameButton, 0, 2, 1, 1)
+
         self.setCentralWidget(self.centralwidget)
 
     def TaskNumber(self, mainwindow):
@@ -122,6 +153,7 @@ class MainMenu(QMainWindow):
         verticalLayout.addWidget(NewTask)
         NewTask.setMinimumSize(150, 75)
         NewTask.setMaximumSize(150, 75)
+        NewTask.clicked.connect(lambda: mainwindow.AddTask())
         label.setText("Помощник решения логических задач")
         FirstTask.setText("Начать с первой задачи")
         ChooseTask.setText("Выбрать задачу")
@@ -272,12 +304,16 @@ class MainWindow(QMainWindow):
     def UIinit(self):
         self.Widget = QWidget()
         self.stack = QStackedWidget()
-        self.window2 = Ui_MainWindow(self)
+
         self.window1 = MainMenu(self)
+        self.window2 = Ui_MainWindow(self)
         self.window3 = ChoiseWindow(self)
+        self.window4 = AddTask(self)
+
         self.stack.addWidget(self.window1)
         self.stack.addWidget(self.window2)
         self.stack.addWidget(self.window3)
+        self.stack.addWidget(self.window4)
         self.stack.setCurrentWidget(self.window1)
 
         self.setCentralWidget(self.Widget)
@@ -286,7 +322,6 @@ class MainWindow(QMainWindow):
 
     def back(self):
         self.stack.setCurrentWidget(self.window1)
-        self.flag = True
 
     def First(self):
         global number
@@ -299,11 +334,15 @@ class MainWindow(QMainWindow):
     def Choice(self):
         self.stack.setCurrentWidget(self.window3)
 
+    def AddTask(self):
+        self.stack.setCurrentWidget(self.window4)
+
 
 if __name__ == "__main__":
     import sys
     app = QApplication(sys.argv)
     window = MainWindow()
     window.setFixedSize(1920, 1080)
+    apply_stylesheet(app, theme='dark_purple.xml')
     window.showMaximized()
     sys.exit(app.exec_())
