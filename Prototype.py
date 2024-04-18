@@ -1,8 +1,8 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QMetaObject, QRect, Qt
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtCore import QRect, Qt
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import QGridLayout, QWidget, QListView, QMenuBar, QStatusBar, QMainWindow, QApplication, \
-    QPushButton, QListWidget, QLabel, QStackedWidget, QVBoxLayout, QTextEdit
+from PyQt5.QtWidgets import QGridLayout, QWidget, QMainWindow, QApplication, QPushButton, QListWidget, QLabel, \
+    QStackedWidget, QVBoxLayout, QTextEdit, QLineEdit
 from qt_material import apply_stylesheet
 import json
 
@@ -20,38 +20,195 @@ with open('ColsAndRowsName.json', 'r', encoding='utf-8') as fh:  # открыв�
 boolz = False
 number = 1
 
+
 class AddTask(QMainWindow):
 
     def __init__(self, mainwindow):
         super().__init__()
+        self.table = None
+        self.table_elements = None
+        self.new_answer = None
+        self.secondwidget = None
+        self.cols = None
+        self.rows = None
         self.setupUi(mainwindow)
 
     def setupUi(self, mainwindow):
-        self.centralwidget = QWidget()
-        self.centralwidget.setObjectName("centralwidget")
-        self.Instruction = QLabel(self.centralwidget)
+        self.mainwidget = QStackedWidget()
+        self.setCentralWidget(self.mainwidget)
+
+        self.firstwidget = QWidget()
+        self.firstwidget.setObjectName("centralwidget")
+
+        self.Instruction = QLabel(self.firstwidget)
         self.Instruction.setGeometry(QtCore.QRect(1530, 0, 381, 291))
         self.Instruction.setObjectName("label")
-        self.SaveButton = QPushButton(self.centralwidget)
-        self.SaveButton.setGeometry(QtCore.QRect(1630, 340, 201, 41))
-        self.SaveButton.setObjectName("pushButton")
-        self.TaskText = QTextEdit(self.centralwidget)
-        self.TaskText.setGeometry(QtCore.QRect(730, 260, 511, 191))
-        self.TaskText.setObjectName("textEdit")
-        self.TaskColsAndRows = QTextEdit(self.centralwidget)
-        self.TaskColsAndRows.setGeometry(QtCore.QRect(730, 470, 511, 101))
-        self.TaskColsAndRows.setObjectName("textEdit_2")
-        self.TaskAnswer = QTextEdit(self.centralwidget)
-        self.TaskAnswer.setGeometry(QtCore.QRect(730, 590, 511, 191))
-        self.TaskAnswer.setObjectName("textEdit_3")
-        self.setCentralWidget(self.centralwidget)
         self.Instruction.setText("Instruction")
-        self.SaveButton.setText("Сохранить задачу")
-        self.BackButton = QPushButton(self.centralwidget)
-        self.BackButton.setGeometry(QtCore.QRect(100, 1800, 201, 41))
+
+        # self.SaveButton = QPushButton(self.firstwidget)
+        # self.SaveButton.setGeometry(QtCore.QRect(1630, 340, 201, 41))
+        # self.SaveButton.setObjectName("pushButton")
+        # self.SaveButton.setText("Сохранить задачу")
+
+        self.TaskText = QTextEdit(self.firstwidget)
+        self.TaskText.setGeometry(QtCore.QRect(730, 260, 511, 191))
+        self.TaskText.setObjectName("TaskText")
+        # self.TaskText.setReadOnly(True)
+
+        self.TaskRowsText = QLabel(self.firstwidget)
+        self.TaskRowsText.setGeometry(QtCore.QRect(730, 470, 200, 35))
+        self.TaskRowsText.setObjectName("TaskRowsText")
+        self.TaskRowsText.setText('Введите количество строк')
+
+        self.TaskRows = QLineEdit(self.firstwidget)
+        self.TaskRows.setGeometry(QtCore.QRect(950, 470, 100, 35))
+        self.TaskRows.setObjectName("TaskRows")
+        self.TaskRows.setMaxLength(1)
+
+        self.TaskColsText = QLabel(self.firstwidget)
+        self.TaskColsText.setGeometry(QtCore.QRect(730, 510, 200, 35))
+        self.TaskColsText.setObjectName("TaskColsText")
+        self.TaskColsText.setText('Введите количество колон')
+
+        self.TaskCols = QLineEdit(self.firstwidget)
+        self.TaskCols.setGeometry(QtCore.QRect(950, 510, 100, 35))
+        self.TaskCols.setObjectName("TaskCols")
+        self.TaskCols.setMaxLength(1)
+
+        self.NextButton = QPushButton(self.firstwidget)
+        self.NextButton.setGeometry(QtCore.QRect(730, 560, 511, 70))
+        self.NextButton.setText('Сгенерировать таблицу\n для ввода ответа')
+        self.NextButton.clicked.connect(lambda: self.tableGen())
+
+        self.BackButton = QPushButton(self.firstwidget)
+        self.BackButton.setGeometry(QtCore.QRect(1630, 340, 201, 41))
         self.BackButton.setObjectName("pushButton")
         self.BackButton.setText('Назад')
         self.BackButton.clicked.connect(lambda: mainwindow.back())
+
+        self.secondwidget = QWidget()
+
+        self.mainwidget.addWidget(self.firstwidget)
+        self.mainwidget.setCurrentWidget(self.firstwidget)
+
+    def tableGen(self):
+        if self.TaskText.toPlainText() and self.TaskRows.text() and self.TaskCols.text():
+            self.table = [[], []]
+            NewTaskText = self.TaskText.setPlainText
+            self.rows = int(self.TaskRows.text()) + 1
+            self.cols = int(self.TaskCols.text()) + 1
+            # rows = len(ColsAndRowsName[str(number)][1]) + 1
+            # cols = len(ColsAndRowsName[str(number)][0]) + 1
+            self.table_elements = [[], []]
+            # for i in range(self.rows - 1):
+            #     self.table_elements[0].append('1')
+            # for j in range(self.cols - 1):
+            #     self.table_elements[1].append('1')
+
+            self.new_answer = []
+            for i in range(self.rows - 1):
+                col_new_answer = []
+                for j in range(self.cols - 1):
+                    col_new_answer.append(' ')
+                self.new_answer.append(col_new_answer)
+
+            if self.rows > 0 and self.cols > 0 and NewTaskText != ' ':
+
+                self.gridLayoutWidget = QWidget(self.secondwidget)
+                self.gridLayoutWidget.setGeometry(
+                    QtCore.QRect(int((1920 - 87 * self.cols) / 2), 300, 87 * self.cols, 87 * self.rows))
+                self.gridLayoutWidget.setObjectName("gridLayoutWidget")
+
+                self.gridLayout = QGridLayout(self.gridLayoutWidget)
+                self.gridLayout.setContentsMargins(0, 0, 0, 0)
+                self.gridLayout.setObjectName("gridLayout")
+
+                for i in range(self.rows):
+                    for j in range(self.cols):
+                        self.listView = QListWidget(self.secondwidget)
+                        self.listView.setGeometry(QtCore.QRect(int((1920 - 1000) / 2), 40, 1000, 200))
+                        self.listView.setObjectName("listView")
+
+                        self.pushButton = QPushButton()
+                        self.pushButton.setStyleSheet('background-color: yellow')
+                        self.pushButton.setMinimumSize(75, 75)
+                        self.pushButton.setMaximumSize(75, 75)
+                        self.pushButton.setText(f'{i}_{j}')
+                        self.pushButton.setObjectName(f'{i}')
+                        self.pushButton.setAccessibleName(f'{j}')
+                        self.pushButton.clicked.connect(
+                            lambda cheked, button=self.pushButton: self.newAnswer(button))
+
+                        self.cell_h = QLineEdit()
+                        self.cell_h.setMinimumSize(75, 30)
+                        self.cell_h.setMaximumSize(75, 30)
+                        self.cell_h.setObjectName(f'{i}{j}')
+                        self.cell_h.setStyleSheet('border: 1px solid #000')
+
+                        self.cell_v = QLineEdit()
+                        self.cell_v.setMinimumSize(75, 30)
+                        self.cell_v.setMaximumSize(75, 30)
+                        self.cell_v.setObjectName(f'{i}')
+                        self.cell_v.setStyleSheet('border: 1px solid #000')
+
+                        if i == 0 and j != 0:
+                            self.table[0].append(self.cell_h)
+                            # self.cell_h.setText(ColsAndRowsName[str()][0][j - 1])
+                            self.gridLayout.addWidget(self.cell_h, i, j, 1, 1)
+                        else:
+                            if j == 0 and i != 0:
+                                self.table[1].append(self.cell_v)
+                                # self.cell_v.setText(ColsAndRowsName[str(self.number)][1][i - 1])
+                                self.gridLayout.addWidget(self.cell_v, i, j, 1, 1)
+                            elif i != 0 and j != 0:
+                                self.gridLayout.addWidget(self.pushButton, i, j, 1, 1)
+                self.mainwidget.addWidget(self.secondwidget)
+                self.mainwidget.setCurrentWidget(self.secondwidget)
+
+
+
+    def newAnswer(self, button):
+
+        i = int(button.objectName()) - 1
+        j = int(button.accessibleName()) - 1
+        if self.new_answer[i][j] == ' ':
+            self.new_answer[i][j] = '+'
+            button.setStyleSheet('background-color: lime')
+        elif self.new_answer[i][j] == '-':
+            self.new_answer[i][j] = '+'
+            button.setStyleSheet('background-color: lime')
+        elif self.new_answer[i][j] == '+':
+            self.new_answer[i][j] = '-'
+            button.setStyleSheet('background-color: red')
+        button.setText(f'{self.new_answer[i][j]}')
+
+        count = 0
+
+        for a in range(self.rows - 1):
+            for b in range(self.cols - 1):
+                if self.new_answer[a][b] == ' ':
+                    count += 1
+
+        if count == 0:
+            boolz = True
+        else:
+            boolz = False
+        # if boolz == True:
+        #     self.saveTask()
+        #     print(self.new_answer)
+        #     print(' ')
+        #     print(self.table_elements)
+        #     print(' ')
+
+
+    def saveTask(self):
+        for self.cell_h in self.table[0]:
+            if len(self.table_elements[0]) < self.rows:
+                self.table_elements[0].append(self.cell_h.text())
+        for self.cell_v in self.table[1]:
+            if len(self.table_elements[1]) < self.cols:
+                self.table_elements[1].append(self.cell_v.text())
+
 
 class ChoiseWindow(QMainWindow):
 
@@ -289,10 +446,6 @@ class Ui_MainWindow(QMainWindow):
             self.listView.addItem(str(variants[str(self.number)]))
             return self.gameplay(mainwindow)
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -340,6 +493,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     import sys
+
     app = QApplication(sys.argv)
     window = MainWindow()
     window.setFixedSize(1920, 1080)
