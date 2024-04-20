@@ -25,6 +25,7 @@ class AddTask(QMainWindow):
 
     def __init__(self, mainwindow):
         super().__init__()
+        self.boolz = None
         self.table = None
         self.table_elements = None
         self.new_answer = None
@@ -44,11 +45,6 @@ class AddTask(QMainWindow):
         self.Instruction.setGeometry(QtCore.QRect(1530, 0, 381, 291))
         self.Instruction.setObjectName("label")
         self.Instruction.setText("Instruction")
-
-        # self.SaveButton = QPushButton(self.firstwidget)
-        # self.SaveButton.setGeometry(QtCore.QRect(1630, 340, 201, 41))
-        # self.SaveButton.setObjectName("pushButton")
-        # self.SaveButton.setText("Сохранить задачу")
 
         self.TaskText = QTextEdit(self.firstwidget)
         self.TaskText.setGeometry(QtCore.QRect(730, 260, 511, 191))
@@ -123,6 +119,12 @@ class AddTask(QMainWindow):
                 self.gridLayout.setContentsMargins(0, 0, 0, 0)
                 self.gridLayout.setObjectName("gridLayout")
 
+                self.SaveButton = QPushButton(self.secondwidget)
+                self.SaveButton.setGeometry(QtCore.QRect(1630, 340, 201, 41))
+                # self.SaveButton.setObjectName("pushButton")
+                self.SaveButton.setText("Сохранить задачу")
+                self.SaveButton.clicked.connect(self.saveTask)
+
                 for i in range(self.rows):
                     for j in range(self.cols):
                         self.listView = QListWidget(self.secondwidget)
@@ -165,8 +167,6 @@ class AddTask(QMainWindow):
                 self.mainwidget.addWidget(self.secondwidget)
                 self.mainwidget.setCurrentWidget(self.secondwidget)
 
-
-
     def newAnswer(self, button):
 
         i = int(button.objectName()) - 1
@@ -190,16 +190,15 @@ class AddTask(QMainWindow):
                     count += 1
 
         if count == 0:
-            boolz = True
+            self.boolz = True
         else:
-            boolz = False
-        # if boolz == True:
+            self.boolz = False
+        # if self.boolz == True:
         #     self.saveTask()
         #     print(self.new_answer)
         #     print(' ')
         #     print(self.table_elements)
         #     print(' ')
-
 
     def saveTask(self):
         for self.cell_h in self.table[0]:
@@ -208,6 +207,11 @@ class AddTask(QMainWindow):
         for self.cell_v in self.table[1]:
             if len(self.table_elements[1]) < self.cols:
                 self.table_elements[1].append(self.cell_v.text())
+        print(self.table_elements)
+        with open('try.json', 'w', encoding='utf-8') as fh:  # открываем файл на запись
+            fh.write(json.dumps(self.table_elements, ensure_ascii=False))
+        with open('try1.json', 'w', encoding='utf-8') as fh:  # открываем файл на запись
+            fh.write(json.dumps(self.new_answer, ensure_ascii=False))
 
 
 class ChoiseWindow(QMainWindow):
