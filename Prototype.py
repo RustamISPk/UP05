@@ -6,6 +6,11 @@ from PyQt5.QtWidgets import QGridLayout, QWidget, QMainWindow, QApplication, QPu
 from qt_material import apply_stylesheet
 import json
 
+hello = {
+    "1": "hello",
+    "2": ''
+}
+
 rows, cols = 0, 0
 
 with open('variants.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
@@ -201,6 +206,7 @@ class AddTask(QMainWindow):
         #     print(' ')
 
     def saveTask(self):
+        global hello
         for self.cell_h in self.table[0]:
             if len(self.table_elements[0]) < self.rows:
                 self.table_elements[0].append(self.cell_h.text())
@@ -208,8 +214,10 @@ class AddTask(QMainWindow):
             if len(self.table_elements[1]) < self.cols:
                 self.table_elements[1].append(self.cell_v.text())
         print(self.table_elements)
+        hello[str(len(hello))] = self.table_elements
+        hello[str(len(hello) + 1)] = ' '
         with open('try.json', 'w', encoding='utf-8') as fh:  # открываем файл на запись
-            fh.write(json.dumps(self.table_elements, ensure_ascii=False))
+            fh.write(json.dumps(hello, ensure_ascii=False))
         with open('try1.json', 'w', encoding='utf-8') as fh:  # открываем файл на запись
             fh.write(json.dumps(self.new_answer, ensure_ascii=False))
 
