@@ -35,6 +35,7 @@ class AddTask(QMainWindow):
         self.secondwidget = None
         self.cols = None
         self.rows = None
+        self.password = 'Admin'
         self.setupUi(mainwindow)
 
     def setupUi(self, mainwindow):
@@ -44,6 +45,14 @@ class AddTask(QMainWindow):
         self.firstwidget = QWidget()
         self.firstwidget.setObjectName("centralwidget")
 
+        self.PasswordLable = QLineEdit(self.firstwidget)
+        self.PasswordLable.setGeometry(QtCore.QRect(0, 85, 200, 75))
+        self.PasswordLable.setEchoMode(QLineEdit.Password)
+        self.PasswordButton = QPushButton(self.firstwidget)
+        self.PasswordButton.setGeometry(QtCore.QRect(0, 0, 200, 75))
+        self.PasswordButton.setText('Введите пароль')
+        self.PasswordButton.clicked.connect(lambda: self.inputPassword())
+
         self.Instruction = QLabel(self.firstwidget)
         self.Instruction.setGeometry(QtCore.QRect(1530, 0, 381, 291))
         self.Instruction.setObjectName("label")
@@ -52,6 +61,7 @@ class AddTask(QMainWindow):
         self.TaskText = QTextEdit(self.firstwidget)
         self.TaskText.setGeometry(QtCore.QRect(730, 260, 511, 191))
         self.TaskText.setObjectName("TaskText")
+        self.TaskText.setEnabled(False)
 
         self.TaskRowsText = QLabel(self.firstwidget)
         self.TaskRowsText.setGeometry(QtCore.QRect(730, 470, 200, 35))
@@ -62,6 +72,7 @@ class AddTask(QMainWindow):
         self.TaskRows.setGeometry(QtCore.QRect(950, 470, 100, 35))
         self.TaskRows.setObjectName("TaskRows")
         self.TaskRows.setValidator(QIntValidator(1, 99, self))
+        self.TaskRows.setEnabled(False)
 
         self.TaskColsText = QLabel(self.firstwidget)
         self.TaskColsText.setGeometry(QtCore.QRect(730, 510, 200, 35))
@@ -72,25 +83,52 @@ class AddTask(QMainWindow):
         self.TaskCols.setGeometry(QtCore.QRect(950, 510, 100, 35))
         self.TaskCols.setObjectName("TaskCols")
         self.TaskCols.setValidator(QIntValidator(1, 99, self))
+        self.TaskCols.setEnabled(False)
 
         self.NextButton = QPushButton(self.firstwidget)
         self.NextButton.setGeometry(QtCore.QRect(730, 560, 511, 70))
         self.NextButton.setText('Сгенерировать таблицу\n для ввода ответа')
         self.NextButton.clicked.connect(lambda: self.tableGen())
+        self.NextButton.setEnabled(False)
 
         self.BackButton = QPushButton(self.firstwidget)
         self.BackButton.setGeometry(QtCore.QRect(1630, 340, 201, 41))
         self.BackButton.setObjectName("pushButton")
         self.BackButton.setText('Назад')
-        self.BackButton.clicked.connect(lambda: mainwindow.back())
+        self.BackButton.clicked.connect(lambda: self.backToMainwindow(mainwindow))
 
         self.secondwidget = QWidget()
 
         self.mainwidget.addWidget(self.firstwidget)
         self.mainwidget.setCurrentWidget(self.firstwidget)
 
+    def backToMainwindow(self, mainwindow):
+        mainwindow.back()
+        self.TaskText.setEnabled(False)
+        self.TaskRows.setEnabled(False)
+        self.TaskCols.setEnabled(False)
+        self.NextButton.setEnabled(False)
+        self.PasswordLable.show()
+        self.PasswordButton.show()
+        self.PasswordLable.clear()
+        self.TaskText.clear()
+        self.TaskCols.clear()
+        self.TaskRows.clear()
+
+
+    def inputPassword(self):
+        userword = self.PasswordLable.text()
+        if userword == self.password:
+            self.TaskText.setEnabled(True)
+            self.TaskRows.setEnabled(True)
+            self.TaskCols.setEnabled(True)
+            self.NextButton.setEnabled(True)
+            self.PasswordLable.hide()
+            self.PasswordButton.hide()
+
     def tableGen(self):
-        if self.TaskText.toPlainText() and self.TaskRows.text() and int(self.TaskRows.text()) != 0 and self.TaskCols.text() and int(self.TaskCols.text()) != 0 :
+        if self.TaskText.toPlainText() and self.TaskRows.text() and int(
+                self.TaskRows.text()) != 0 and self.TaskCols.text() and int(self.TaskCols.text()) != 0:
             self.backbutton = QPushButton(self.secondwidget)
             self.backbutton.setGeometry(QtCore.QRect(1630, 400, 201, 41))
             self.backbutton.setText('Назад')
