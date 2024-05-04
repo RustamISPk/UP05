@@ -54,9 +54,19 @@ class AddTask(QMainWindow):
         self.PasswordButton.clicked.connect(lambda: self.inputPassword())
 
         self.Instruction = QLabel(self.firstwidget)
-        self.Instruction.setGeometry(QtCore.QRect(1530, 0, 381, 291))
+        self.Instruction.setGeometry(QtCore.QRect(1300, 0, 500, 300))
         self.Instruction.setObjectName("label")
-        self.Instruction.setText("Instruction")
+        self.Instruction.setText("Режим добавления задачи предназначен\n"
+                                 "только для учителей. Введите пароль,\nчтобы продолжить добавление.\n"
+                                 "При добавлении новой задачи, размер таблицы\n"
+                                 "не должен превышать размер 7х14."
+                                 "\nПеред тем как сгенерировать таблицу,\nубедитесь, "
+                                 "что поля для текста задачи\nи размеров таблицы заполнены\n"
+                                 "")
+        self.Instruction.setTextFormat(Qt.RichText)
+        self.Instruction.setWordWrap(True)
+        self.Instruction.setAlignment(Qt.AlignJustify)
+        self.Instruction.setStyleSheet("font: 15pt Times New Roman")
 
         self.TaskText = QTextEdit(self.firstwidget)
         self.TaskText.setGeometry(QtCore.QRect(730, 260, 511, 191))
@@ -67,22 +77,24 @@ class AddTask(QMainWindow):
         self.TaskRowsText.setGeometry(QtCore.QRect(730, 470, 200, 35))
         self.TaskRowsText.setObjectName("TaskRowsText")
         self.TaskRowsText.setText('Введите количество строк')
+        self.TaskRowsText.setStyleSheet('font: 10pt Times New Roman')
 
         self.TaskRows = QLineEdit(self.firstwidget)
         self.TaskRows.setGeometry(QtCore.QRect(950, 470, 100, 35))
         self.TaskRows.setObjectName("TaskRows")
-        self.TaskRows.setValidator(QIntValidator(1, 99, self))
+        self.TaskRows.setValidator(QIntValidator(1, 7, self))
         self.TaskRows.setEnabled(False)
 
         self.TaskColsText = QLabel(self.firstwidget)
         self.TaskColsText.setGeometry(QtCore.QRect(730, 510, 200, 35))
         self.TaskColsText.setObjectName("TaskColsText")
         self.TaskColsText.setText('Введите количество колон')
+        self.TaskColsText.setStyleSheet('font: 10pt Times New Roman')
 
         self.TaskCols = QLineEdit(self.firstwidget)
         self.TaskCols.setGeometry(QtCore.QRect(950, 510, 100, 35))
         self.TaskCols.setObjectName("TaskCols")
-        self.TaskCols.setValidator(QIntValidator(1, 99, self))
+        self.TaskCols.setValidator(QIntValidator(1, 14, self))
         self.TaskCols.setEnabled(False)
 
         self.NextButton = QPushButton(self.firstwidget)
@@ -115,7 +127,6 @@ class AddTask(QMainWindow):
         self.TaskCols.clear()
         self.TaskRows.clear()
 
-
     def inputPassword(self):
         userword = self.PasswordLable.text()
         if userword == self.password:
@@ -128,11 +139,22 @@ class AddTask(QMainWindow):
 
     def tableGen(self):
         if self.TaskText.toPlainText() and self.TaskRows.text() and int(
-                self.TaskRows.text()) != 0 and self.TaskCols.text() and int(self.TaskCols.text()) != 0:
+                self.TaskRows.text()) != 0 and self.TaskCols.text() and int(self.TaskCols.text()) != 0 \
+                and int(self.TaskRows.text()) <= 7 and int(self.TaskCols.text()) <= 14 and len(self.TaskText.toPlainText()) <= 600:
+            self.secondInstruction = QLabel(self.secondwidget)
+            self.secondInstruction.setGeometry(1500, 100, 400, 100)
+            self.secondInstruction.setText("Введите правильный ответ в таблицу\n"
+                                           "и подпишите названия строк и колон")
+            self.secondInstruction.setTextFormat(Qt.RichText)
+            self.secondInstruction.setWordWrap(True)
+            self.secondInstruction.setAlignment(Qt.AlignJustify)
+            self.secondInstruction.setStyleSheet("font: 15pt Times New Roman")
+
             self.backbutton = QPushButton(self.secondwidget)
             self.backbutton.setGeometry(QtCore.QRect(1630, 400, 201, 41))
             self.backbutton.setText('Назад')
             self.backbutton.clicked.connect(lambda: self.back())
+
             self.table = [[], []]
             NewTaskText = self.TaskText.setPlainText
             self.rows = int(self.TaskRows.text()) + 1
@@ -162,12 +184,16 @@ class AddTask(QMainWindow):
                 self.SaveButton.setText("Сохранить задачу")
                 self.SaveButton.clicked.connect(self.saveTask)
 
+                self.listView = QLabel(self.secondwidget)
+                self.listView.setText(self.TaskText.toPlainText())
+                self.listView.setGeometry(QtCore.QRect(int((1920 - 1000) / 2), 40, 1000, 200))
+                self.listView.setTextFormat(Qt.RichText)
+                self.listView.setWordWrap(True)
+                self.listView.setAlignment(Qt.AlignJustify)
+                self.listView.setStyleSheet("font: 15pt Times New Roman")
+
                 for i in range(self.rows):
                     for j in range(self.cols):
-                        self.listView = QLabel(self.secondwidget)
-                        self.listView.setText(self.TaskText.toPlainText())
-                        self.listView.setGeometry(QtCore.QRect(int((1920 - 1000) / 2), 40, 1000, 200))
-                        self.listView.setObjectName("listView")
 
                         self.pushButton = QPushButton()
                         self.pushButton.setStyleSheet('background-color: yellow')
@@ -314,7 +340,7 @@ class ChoiseWindow(QMainWindow):
         self.centralwidget = QWidget()
         self.centralwidget.setObjectName("centralwidget")
         self.label = QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(650, 10, 470, 101))
+        self.label.setGeometry(QtCore.QRect(725, 10, 470, 101))
         font = QFont()
         font.setFamily("Times New Roman")
         font.setPointSize(22)
@@ -322,8 +348,10 @@ class ChoiseWindow(QMainWindow):
         self.label.setAlignment(Qt.AlignCenter)
         self.label.setObjectName("label")
         self.label.setText('Введите номер задачи в поле')
+        self.label.setStyleSheet("font: 20pt Times New Roman")
+        self.label.setAlignment(Qt.AlignCenter)
         self.gridLayoutWidget = QWidget(self.centralwidget)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(390, 100, 1000, 50))
+        self.gridLayoutWidget.setGeometry(QtCore.QRect(460, 100, 1000, 50))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
         self.gridLayout = QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
@@ -376,17 +404,16 @@ class MainMenu(QMainWindow):
     def initUI(self, mainwindow):
         label = QLabel(self)
         label.setGeometry(QRect(691, 40, 538, 111))
-        font = QFont()
-        font.setFamily("Times New Roman")
-        font.setPointSize(20)
-        label.setFont(font)
-        label.setObjectName("label")
+        label.setAlignment(Qt.AlignCenter)
+        label.setText("Помощник решения логических задач")
+        label.setStyleSheet("font: 20pt Times New Roman")
         verticalLayoutWidget = QWidget(self)
         verticalLayoutWidget.setGeometry(QRect(880, 260, 160, 250))
         verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         verticalLayout = QVBoxLayout(verticalLayoutWidget)
         verticalLayout.setContentsMargins(0, 0, 0, 0)
         verticalLayout.setObjectName("verticalLayout")
+        verticalLayout.setAlignment(Qt.AlignCenter)
         FirstTask = QPushButton(verticalLayoutWidget)
         FirstTask.setObjectName("FirstTask")
         FirstTask.clicked.connect(lambda: mainwindow.First())
@@ -405,10 +432,9 @@ class MainMenu(QMainWindow):
         NewTask.setMinimumSize(150, 75)
         NewTask.setMaximumSize(150, 75)
         NewTask.clicked.connect(lambda: mainwindow.AddTask())
-        label.setText("Помощник решения логических задач")
-        FirstTask.setText("Начать с первой задачи")
-        ChooseTask.setText("Выбрать задачу")
-        NewTask.setText("Добавить задачу")
+        FirstTask.setText(f"Начать с первой\nзадачи")
+        ChooseTask.setText("Выбрать\nзадачу")
+        NewTask.setText("Добавить\nзадачу")
 
 
 class Ui_MainWindow(QMainWindow):
@@ -458,10 +484,14 @@ class Ui_MainWindow(QMainWindow):
             self.BackButton.setGeometry(0, 0, 100, 50)
             self.BackButton.clicked.connect(lambda: mainwindow.back())
 
-            self.listView = QListWidget(self.centralwidget)
+            self.listView = QLabel(self.centralwidget)
             self.listView.setGeometry(QtCore.QRect(int((self.width - 1000) / 2), 40, 1000, 200))
             self.listView.setObjectName("listView")
-            self.listView.addItem(str(variants[str(self.number)]))
+            self.listView.setText(str(variants[str(self.number)]))
+            self.listView.setAlignment(Qt.AlignJustify)
+            self.listView.setStyleSheet("font: 12pt Times New Roman")
+            self.listView.setTextFormat(Qt.RichText)
+            self.listView.setWordWrap(True)
 
             self.gridLayoutWidget = QWidget(self.centralwidget)
             self.gridLayoutWidget.setGeometry(
@@ -489,12 +519,15 @@ class Ui_MainWindow(QMainWindow):
                     self.cell_h.setMaximumSize(75, 30)
                     self.cell_h.setObjectName(f'{i}{j}')
                     self.cell_h.setStyleSheet('border: 1px solid #000')
+                    # self.cell_h.setStyleSheet('font: 12pt Times New Roman')
+                    self.cell_h.setAlignment(Qt.AlignCenter)
 
                     self.cell_v = QLabel()
                     self.cell_v.setMinimumSize(75, 30)
                     self.cell_v.setMaximumSize(75, 30)
                     self.cell_v.setObjectName(f'{i}{j}')
                     self.cell_v.setStyleSheet('border: 1px solid #000')
+                    self.cell_v.setAlignment(Qt.AlignCenter)
 
                     if i == 0 and j != 0:
                         self.cell_h.setText(ColsAndRowsName[str(self.number)][0][j - 1])
@@ -537,7 +570,7 @@ class Ui_MainWindow(QMainWindow):
         if boolz == True and lists == answer[str(self.number)]:
             self.number += 1
             self.listView.clear()
-            self.listView.addItem(str(variants[str(self.number)]))
+            self.listView.setText(str(variants[str(self.number)]))
             return self.gameplay(mainwindow)
 
 
