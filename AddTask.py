@@ -130,7 +130,6 @@ class AddTask(QMainWindow):
 
             text = self.TaskText.toPlainText()
             check = text.find(f'Задание №{len(mainwindow.variants)}.')
-            print(check)
 
             if check == -1:
                 cursor = QTextCursor(self.TaskText.document())
