@@ -2,7 +2,8 @@ from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont, QIntValidator
 from PyQt5.QtWidgets import QGridLayout, QWidget, QMainWindow, QPushButton, QLabel, QLineEdit
-from MainRegime import Ui_MainWindow
+from MainRegime import MainRegime
+
 
 class ChoiseWindow(QMainWindow):
 
@@ -15,6 +16,9 @@ class ChoiseWindow(QMainWindow):
         self.centralwidget.setObjectName("centralwidget")
         self.label = QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(725, 10, 470, 101))
+        self.amounttask = QLabel(self.centralwidget)
+        self.amounttask.setGeometry(QtCore.QRect(1600, 10, 300, 50))
+        self.amounttask.setText(f'Количество задач: {len(mainwindow.variants) - 1}')
         font = QFont()
         font.setFamily("Times New Roman")
         font.setPointSize(22)
@@ -61,8 +65,7 @@ class ChoiseWindow(QMainWindow):
         mainwindow.number = int(self.TaskEdit.text())
         if mainwindow.number < len(mainwindow.variants):
             mainwindow.window2.deleteLater()
-            mainwindow.window2 = Ui_MainWindow(mainwindow)
+            mainwindow.window2 = MainRegime(mainwindow)
             mainwindow.stack.addWidget(mainwindow.window2)
             mainwindow.stack.setCurrentWidget(mainwindow.window2)
             self.TaskEdit.clear()
-

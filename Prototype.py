@@ -4,8 +4,7 @@ import json
 from AddTask import AddTask
 from ChoiseWindow import ChoiseWindow
 from MainMenu import MainMenu
-from MainRegime import Ui_MainWindow
-rows, cols = 0, 0
+from MainRegime import MainRegime
 
 
 class MainWindow(QMainWindow):
@@ -22,6 +21,7 @@ class MainWindow(QMainWindow):
         self.flag = False
         self.number = 1
         self.boolz = False
+        self.rows, self.cols = 0, 0
         self.UIinit()
 
     def UIinit(self):
@@ -38,7 +38,7 @@ class MainWindow(QMainWindow):
             self.ColsAndRowsName = json.load(fh)  # загружаем из файла данные в словарь data
 
         self.window1 = MainMenu(self)
-        self.window2 = Ui_MainWindow(self)
+        self.window2 = MainRegime(self)
         self.window3 = ChoiseWindow(self)
         self.window4 = AddTask(self)
 
@@ -54,18 +54,21 @@ class MainWindow(QMainWindow):
 
     def back(self):
         self.stack.setCurrentWidget(self.window1)
+        self.window3.TaskEdit.clear()
 
     def First(self):
         self.number = 1
         self.window2.deleteLater()
-        self.window2 = Ui_MainWindow(self)
+        self.window2 = MainRegime(self)
         self.stack.addWidget(self.window2)
         self.stack.setCurrentWidget(self.window2)
 
     def Choice(self):
         self.stack.setCurrentWidget(self.window3)
+        self.window3.amounttask.setText(f'Количество задач: {len(self.variants) - 1}')
 
     def AddTask(self):
+        self.window4.TaskText.append(f'Задание №{len(self.variants)}.')
         self.stack.setCurrentWidget(self.window4)
 
 

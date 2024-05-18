@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QGridLayout, QWidget, QMainWindow, QApplication, QPushButton, QLabel
 
 
-class Ui_MainWindow(QMainWindow):
+class MainRegime(QMainWindow):
     def __init__(self, mainwindow):
         super().__init__()
         self.gridLayout = None
@@ -26,18 +26,17 @@ class Ui_MainWindow(QMainWindow):
         self.gameplay(mainwindow)
 
     def rows_cols_number(self, number, mainwindow):
-        global rows, cols
-        rows = len(mainwindow.ColsAndRowsName[str(number)][1]) + 1
-        cols = len(mainwindow.ColsAndRowsName[str(number)][0]) + 1
+        mainwindow.rows = len(mainwindow.ColsAndRowsName[str(number)][1]) + 1
+        mainwindow.cols = len(mainwindow.ColsAndRowsName[str(number)][0]) + 1
 
     def gameplay(self, mainwindow):
         if self.number < len(mainwindow.variants):
             self.rows_cols_number(self.number, mainwindow)
 
             gamefield = []
-            for i in range(rows - 1):
+            for i in range(mainwindow.rows - 1):
                 col_list = []
-                for j in range(cols - 1):
+                for j in range(mainwindow.cols - 1):
                     col_list.append(' ')
                 gamefield.append(col_list)
 
@@ -61,15 +60,15 @@ class Ui_MainWindow(QMainWindow):
 
             self.gridLayoutWidget = QWidget(self.centralwidget)
             self.gridLayoutWidget.setGeometry(
-                QtCore.QRect(int((self.width - 87 * cols) / 2), 300, 87 * cols, 87 * rows))
+                QtCore.QRect(int((self.width - 87 * mainwindow.cols) / 2), 300, 87 * mainwindow.cols, 87 * mainwindow.rows))
             self.gridLayoutWidget.setObjectName("gridLayoutWidget")
 
             self.gridLayout = QGridLayout(self.gridLayoutWidget)
             self.gridLayout.setContentsMargins(0, 0, 0, 0)
             self.gridLayout.setObjectName("gridLayout")
 
-            for i in range(rows):
-                for j in range(cols):
+            for i in range(mainwindow.rows):
+                for j in range(mainwindow.cols):
                     self.pushButton = QPushButton()
                     self.pushButton.setStyleSheet('background-color: yellow')
                     self.pushButton.setMinimumSize(75, 75)
@@ -124,8 +123,8 @@ class Ui_MainWindow(QMainWindow):
             button.setStyleSheet('background-color: red')
         button.setText(f'{lists[i][j]}')
         count = 0
-        for a in range(rows - 1):
-            for b in range(cols - 1):
+        for a in range(mainwindow.rows - 1):
+            for b in range(mainwindow.cols - 1):
                 if lists[a][b] == ' ':
                     count += 1
         if count == 0:

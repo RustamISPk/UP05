@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QGridLayout, QWidget, QMainWindow, QPushButton, QLabel, \
     QStackedWidget, QTextEdit, QLineEdit
+from PyQt5.QtGui import QTextCursor
 import json
 
 
@@ -122,10 +123,21 @@ class AddTask(QMainWindow):
             self.PasswordButton.hide()
 
     def tableGen(self, mainwindow):
-        if self.TaskText.toPlainText() and self.TaskRows.text() and int(
+        if self.TaskText.toPlainText() and self.TaskText.toPlainText() != f'Задание №{len(mainwindow.variants)}.' and self.TaskRows.text() and int(
                 self.TaskRows.text()) != 0 and self.TaskCols.text() and int(self.TaskCols.text()) != 0 \
                 and int(self.TaskRows.text()) <= 7 and int(self.TaskCols.text()) <= 14 and len(
             self.TaskText.toPlainText()) <= 600:
+
+            text = self.TaskText.toPlainText()
+            check = text.find(f'Задание №{len(mainwindow.variants)}.')
+            print(check)
+
+            if check == -1:
+                cursor = QTextCursor(self.TaskText.document())
+                cursor.setPosition(0)
+                self.TaskText.setTextCursor(cursor)
+                self.TaskText.insertPlainText(f'Задание №{len(mainwindow.variants)}.')
+
             self.secondInstruction = QLabel(self.secondwidget)
             self.secondInstruction.setGeometry(1500, 100, 400, 100)
             self.secondInstruction.setText("Введите правильный ответ в таблицу\n"
@@ -138,7 +150,7 @@ class AddTask(QMainWindow):
             self.backbutton = QPushButton(self.secondwidget)
             self.backbutton.setGeometry(QtCore.QRect(1630, 400, 201, 41))
             self.backbutton.setText('Назад')
-            self.backbutton.clicked.connect(lambda: self.back())
+            self.backbutton.clicked.connect(lambda: self.back(mainwindow))
 
             self.table = [[], []]
             NewTaskText = self.TaskText.setPlainText
@@ -303,8 +315,9 @@ class AddTask(QMainWindow):
             self.TaskCols.clear()
             self.TaskRows.clear()
             self.TaskText.clear()
+            self.TaskText.append(f'Задание №{len(mainwindow.variants)}.')
 
-    def back(self):
+    def back(self, mainwindow):
         self.mainwidget.setCurrentWidget(self.firstwidget)
         self.secondwidget.deleteLater()
         self.secondwidget = QWidget()
@@ -312,3 +325,4 @@ class AddTask(QMainWindow):
         self.TaskCols.clear()
         self.TaskRows.clear()
         self.TaskText.clear()
+        self.TaskText.append(f'Задание №{len(mainwindow.variants)}.')

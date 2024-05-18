@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import QWidget, QMainWindow, QPushButton, QLabel, QVBoxLayo
 
 
 class MainMenu(QMainWindow):
-    global variants, answer, ColsAndRowsName
 
     def __init__(self, mainwindow):
         super().__init__()
