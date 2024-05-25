@@ -84,7 +84,6 @@ class MainRegime(QMainWindow):
                     self.cell_h.setMaximumSize(75, 30)
                     self.cell_h.setObjectName(f'{i}{j}')
                     self.cell_h.setStyleSheet('border: 1px solid #000')
-                    # self.cell_h.setStyleSheet('font: 12pt Times New Roman')
                     self.cell_h.setAlignment(Qt.AlignCenter)
 
                     self.cell_v = QLabel()
