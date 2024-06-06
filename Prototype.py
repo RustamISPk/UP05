@@ -10,6 +10,7 @@ from MainRegime import MainRegime
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.Widget = None
         self.window4 = None
         self.window3 = None
         self.window2 = None
@@ -28,14 +29,16 @@ class MainWindow(QMainWindow):
         self.Widget = QWidget()
         self.stack = QStackedWidget()
 
-        with open('variants.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
-            self.variants = json.load(fh)  # загружаем из файла данные в словарь data
+        self.setWindowTitle("Помощник решения логических задач")
 
-        with open('answers.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
-            self.answer = json.load(fh)  # загружаем из файла данные в словарь data
+        with open('variants.json', 'r', encoding='utf-8') as fh:
+            self.variants = json.load(fh)
 
-        with open('ColsAndRowsName.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
-            self.ColsAndRowsName = json.load(fh)  # загружаем из файла данные в словарь data
+        with open('answers.json', 'r', encoding='utf-8') as fh:
+            self.answer = json.load(fh)
+
+        with open('ColsAndRowsName.json', 'r', encoding='utf-8') as fh:
+            self.ColsAndRowsName = json.load(fh)
 
         self.window1 = MainMenu(self)
         self.window2 = MainRegime(self)

@@ -166,64 +166,64 @@ class AddTask(QMainWindow):
 
             if self.rows > 0 and self.cols > 0 and NewTaskText != ' ':
 
-                self.gridLayoutWidget = QWidget(self.secondwidget)
-                self.gridLayoutWidget.setGeometry(
+                self.TableWidget = QWidget(self.secondwidget)
+                self.TableWidget.setGeometry(
                     QtCore.QRect(int((1920 - 87 * self.cols) / 2), 300, 87 * self.cols, 87 * self.rows))
-                self.gridLayoutWidget.setObjectName("gridLayoutWidget")
+                self.TableWidget.setObjectName("gridLayoutWidget")
 
-                self.gridLayout = QGridLayout(self.gridLayoutWidget)
-                self.gridLayout.setContentsMargins(0, 0, 0, 0)
-                self.gridLayout.setObjectName("gridLayout")
+                self.TableLayout = QGridLayout(self.TableWidget)
+                self.TableLayout.setContentsMargins(0, 0, 0, 0)
+                self.TableLayout.setObjectName("gridLayout")
 
                 self.SaveButton = QPushButton(self.secondwidget)
                 self.SaveButton.setGeometry(QtCore.QRect(1630, 340, 201, 41))
-                self.SaveButton.setText("Сохранить задачу")
+                self.SaveButton.setText("Сохранить задание")
                 self.SaveButton.clicked.connect(lambda: self.saveTask(mainwindow))
 
-                self.listView = QLabel(self.secondwidget)
-                self.listView.setText(self.TaskText.toPlainText())
-                self.listView.setGeometry(QtCore.QRect(int((1920 - 1000) / 2), 40, 1000, 200))
-                self.listView.setTextFormat(Qt.RichText)
-                self.listView.setWordWrap(True)
-                self.listView.setAlignment(Qt.AlignJustify)
-                self.listView.setStyleSheet("font: 15pt Times New Roman")
+                self.TaskTextLabel = QLabel(self.secondwidget)
+                self.TaskTextLabel.setText(self.TaskText.toPlainText())
+                self.TaskTextLabel.setGeometry(QtCore.QRect(int((1920 - 1000) / 2), 40, 1000, 200))
+                self.TaskTextLabel.setTextFormat(Qt.RichText)
+                self.TaskTextLabel.setWordWrap(True)
+                self.TaskTextLabel.setAlignment(Qt.AlignJustify)
+                self.TaskTextLabel.setStyleSheet("font: 15pt Times New Roman")
 
                 for i in range(self.rows):
                     for j in range(self.cols):
 
-                        self.pushButton = QPushButton()
-                        self.pushButton.setStyleSheet('background-color: yellow')
-                        self.pushButton.setMinimumSize(75, 75)
-                        self.pushButton.setMaximumSize(75, 75)
-                        self.pushButton.setText(f'{i}_{j}')
-                        self.pushButton.setObjectName(f'{i}')
-                        self.pushButton.setAccessibleName(f'{j}')
-                        self.pushButton.clicked.connect(
-                            lambda cheked, button=self.pushButton: self.newAnswer(button))
+                        self.TableButton = QPushButton()
+                        self.TableButton.setStyleSheet('background-color: yellow')
+                        self.TableButton.setMinimumSize(75, 75)
+                        self.TableButton.setMaximumSize(75, 75)
+                        self.TableButton.setText(f'{i}_{j}')
+                        self.TableButton.setObjectName(f'{i}')
+                        self.TableButton.setAccessibleName(f'{j}')
+                        self.TableButton.clicked.connect(
+                            lambda cheked, button=self.TableButton: self.newAnswer(button))
 
-                        self.cell_h = QLineEdit()
-                        self.cell_h.setMinimumSize(75, 30)
-                        self.cell_h.setMaximumSize(75, 30)
-                        self.cell_h.setObjectName(f'{i}{j}')
-                        self.cell_h.setStyleSheet('border: 1px solid #000')
-                        self.cell_h.setText('')
+                        self.RowName = QLineEdit()
+                        self.RowName.setMinimumSize(75, 30)
+                        self.RowName.setMaximumSize(75, 30)
+                        self.RowName.setObjectName(f'{i}{j}')
+                        self.RowName.setStyleSheet('border: 1px solid #000')
+                        self.RowName.setText('')
 
-                        self.cell_v = QLineEdit()
-                        self.cell_v.setMinimumSize(75, 30)
-                        self.cell_v.setMaximumSize(75, 30)
-                        self.cell_v.setObjectName(f'{i}')
-                        self.cell_v.setStyleSheet('border: 1px solid #000')
-                        self.cell_v.setText('')
+                        self.ColName = QLineEdit()
+                        self.ColName.setMinimumSize(75, 30)
+                        self.ColName.setMaximumSize(75, 30)
+                        self.ColName.setObjectName(f'{i}')
+                        self.ColName.setStyleSheet('border: 1px solid #000')
+                        self.ColName.setText('')
 
                         if i == 0 and j != 0:
-                            self.table[0].append(self.cell_h)
-                            self.gridLayout.addWidget(self.cell_h, i, j, 1, 1)
+                            self.table[0].append(self.RowName)
+                            self.TableLayout.addWidget(self.RowName, i, j, 1, 1)
                         else:
                             if j == 0 and i != 0:
-                                self.table[1].append(self.cell_v)
-                                self.gridLayout.addWidget(self.cell_v, i, j, 1, 1)
+                                self.table[1].append(self.ColName)
+                                self.TableLayout.addWidget(self.ColName, i, j, 1, 1)
                             elif i != 0 and j != 0:
-                                self.gridLayout.addWidget(self.pushButton, i, j, 1, 1)
+                                self.TableLayout.addWidget(self.TableButton, i, j, 1, 1)
                 self.mainwidget.addWidget(self.secondwidget)
                 self.mainwidget.setCurrentWidget(self.secondwidget)
 
@@ -258,27 +258,27 @@ class AddTask(QMainWindow):
         cellhcheck = False
         cellvcheck = False
 
-        for self.cell_h in self.table[0]:
-            if self.cell_h.text() != '':
+        for self.RowName in self.table[0]:
+            if self.RowName.text() != '':
                 cellhcheck = True
             else:
                 cellhcheck = False
                 break
 
-        for self.cell_v in self.table[1]:
-            if self.cell_v.text() != '':
+        for self.ColName in self.table[1]:
+            if self.ColName.text() != '':
                 cellvcheck = True
             else:
                 cellvcheck = False
                 break
 
         if cellvcheck == True and cellhcheck == True and self.boolz == True:
-            for self.cell_h in self.table[0]:
-                if len(self.table_elements[0]) < self.rows and self.cell_h.text() != '':
-                    self.table_elements[0].append(self.cell_h.text())
-            for self.cell_v in self.table[1]:
-                if len(self.table_elements[1]) < self.cols and self.cell_v.text() != '':
-                    self.table_elements[1].append(self.cell_v.text())
+            for self.RowName in self.table[0]:
+                if len(self.table_elements[0]) < self.rows and self.RowName.text() != '':
+                    self.table_elements[0].append(self.RowName.text())
+            for self.ColName in self.table[1]:
+                if len(self.table_elements[1]) < self.cols and self.ColName.text() != '':
+                    self.table_elements[1].append(self.ColName.text())
 
             mainwindow.variants[str(len(mainwindow.variants))] = self.TaskText.toPlainText()
             mainwindow.variants[str(len(mainwindow.variants) + 1)] = " "
