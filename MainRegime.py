@@ -125,10 +125,10 @@ class MainRegime(QMainWindow):
                 if lists[a][b] == ' ':
                     count += 1
         if count == 0:
-            mainwindow.boolz = True
+            mainwindow.answer_check = True
         else:
-            mainwindow.boolz = False
-        if mainwindow.boolz == True and lists == mainwindow.answer[str(self.number)]:
+            mainwindow.answer_check = False
+        if mainwindow.answer_check == True and lists == mainwindow.answer[str(self.number)]:
             self.number += 1
             self.TaskLabel.clear()
             self.TaskLabel.setText(str(mainwindow.variants[str(self.number)]))

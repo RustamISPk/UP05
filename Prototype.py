@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
         self.stack = None
         self.flag = False
         self.number = 1
-        self.boolz = False
+        self.answer_check = False
         self.rows, self.cols = 0, 0
         self.UIinit()
 
