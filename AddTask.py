@@ -289,23 +289,23 @@ class AddTask(QMainWindow):
             mainwindow.ColsAndRowsName[str(len(mainwindow.ColsAndRowsName))] = self.table_elements
             mainwindow.ColsAndRowsName[str(len(mainwindow.ColsAndRowsName) + 1)] = " "
 
-            with open('ColsAndRowsName.json', 'w', encoding='utf-8') as fh:  # открываем файл на запись
+            with open('ColsAndRowsName.json', 'w', encoding='utf-8') as fh:
                 fh.write(json.dumps(mainwindow.ColsAndRowsName, ensure_ascii=False))
 
-            with open('variants.json', 'w', encoding='utf-8') as fh:  # открываем файл на запись
+            with open('variants.json', 'w', encoding='utf-8') as fh:
                 fh.write(json.dumps(mainwindow.variants, ensure_ascii=False))
 
-            with open('answers.json', 'w', encoding='utf-8') as fh:  # открываем файл на запись
+            with open('answers.json', 'w', encoding='utf-8') as fh:
                 fh.write(json.dumps(mainwindow.answer, ensure_ascii=False))
 
-            with open('variants.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
-                mainwindow.variants = json.load(fh)  # загружаем из файла данные в словарь data
+            with open('variants.json', 'r', encoding='utf-8') as fh:
+                mainwindow.variants = json.load(fh)
 
-            with open('answers.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
-                mainwindow.answer = json.load(fh)  # загружаем из файла данные в словарь data
+            with open('answers.json', 'r', encoding='utf-8') as fh:
+                mainwindow.answer = json.load(fh)
 
-            with open('ColsAndRowsName.json', 'r', encoding='utf-8') as fh:  # открываем файл на чтение
-                mainwindow.ColsAndRowsName = json.load(fh)  # загружаем из файла данные в словарь data
+            with open('ColsAndRowsName.json', 'r', encoding='utf-8') as fh:
+                mainwindow.ColsAndRowsName = json.load(fh)
 
             self.mainwidget.setCurrentWidget(self.firstwidget)
             self.secondwidget.deleteLater()
