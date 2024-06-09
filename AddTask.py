@@ -195,7 +195,6 @@ class AddTask(QMainWindow):
                         self.TableButton.setStyleSheet('background-color: yellow')
                         self.TableButton.setMinimumSize(75, 75)
                         self.TableButton.setMaximumSize(75, 75)
-                        self.TableButton.setText(f'{i}_{j}')
                         self.TableButton.setObjectName(f'{i}')
                         self.TableButton.setAccessibleName(f'{j}')
                         self.TableButton.clicked.connect(
